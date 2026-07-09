@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ heading }}</title>
+  </head>
+  <body style="margin:0;background:#f7f5fa;font-family:Arial,sans-serif;color:#17151c;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f7f5fa;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border:1px solid #ebe7f0;border-radius:8px;">
+            <tr>
+              <td style="padding:32px;">
+                <p style="margin:0 0 24px;font-size:28px;font-style:italic;">Tapat</p>
+                <h1 style="margin:0 0 16px;font-size:26px;line-height:1.25;">{{ heading }}</h1>
+                <p style="margin:0 0 16px;font-size:16px;line-height:1.6;">Hi {{ full_name }},</p>
+                <p style="margin:0 0 24px;font-size:16px;line-height:1.6;">{{ message|linebreaksbr }}</p>
+                <a href="{{ button_url }}" style="display:inline-block;background:#8b5cf6;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:8px;">
+                  {{ button_text }}
+                </a>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:18px 0 0;font-size:12px;color:#817887;">&copy; {{ current_year }} Tapat Care</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

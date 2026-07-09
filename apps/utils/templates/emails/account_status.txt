@@ -1,0 +1,8 @@
+Hi {{ full_name }},
+
+{{ heading }}
+
+{{ message }}
+
+{{ button_text }}:
+{{ button_url }}
