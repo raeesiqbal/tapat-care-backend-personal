@@ -5,7 +5,11 @@ from rest_framework import serializers
 from apps.caregivers.models import (
     CaregiverSkill , Caregiver,
 )
-from apps.users.models import UserAddress
+from apps.caregivers.serializers.qualifications_experience import (
+    qualifications_experience_options,
+    serialize_qualifications_experience,
+)
+from apps.users.models import UserAddress, UserProfile
 # serializers
 class CaregiverSkillGetSerializer(BaseSerializer):
     class Meta:
@@ -83,3 +87,44 @@ class CaregiverGetSerializer(BaseSerializer):
 
     def get_services(self, obj):
         return [service.name for service in obj.services.all()]
+
+
+class CaregiverDetailGetSerializer(CaregiverGetSerializer):
+    services = serializers.SerializerMethodField()
+    languages = serializers.SerializerMethodField()
+    qualifications_experience = serializers.SerializerMethodField()
+
+    class Meta(CaregiverGetSerializer.Meta):
+        fields = [
+            *CaregiverGetSerializer.Meta.fields,
+            "availability",
+            "languages",
+            "qualifications_experience",
+        ]
+
+    def get_languages(self, obj):
+        try:
+            profile = obj.user.profile
+        except UserProfile.DoesNotExist:
+            return []
+
+        return profile.languages if isinstance(profile.languages, list) else []
+
+    def get_services(self, obj):
+        return [
+            {
+                "id": service.id,
+                "name": service.name,
+                "service_category": service.service_category_id,
+                "service_category_name": (
+                    str(getattr(service.service_category, "name", "") or "").strip()
+                ),
+            }
+            for service in obj.services.all()
+        ]
+
+    def get_qualifications_experience(self, obj):
+        return {
+            **serialize_qualifications_experience(obj),
+            "options": qualifications_experience_options(),
+        }

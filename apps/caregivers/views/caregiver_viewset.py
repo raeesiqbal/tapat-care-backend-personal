@@ -9,7 +9,10 @@ from apps.caregivers.models import Caregiver
 from rest_framework.response import Response
 from rest_framework import status
 from apps.caregivers.serializers.create_serializers import CaregiverCreateSerializer
-from apps.caregivers.serializers.get_serializers import CaregiverGetSerializer
+from apps.caregivers.serializers.get_serializers import (
+    CaregiverDetailGetSerializer,
+    CaregiverGetSerializer,
+)
 from apps.caregivers.serializers.update_serializers import (
     CaregiverProfileUpdateSerializer,CaregiverUpdateSerializer
 )
@@ -109,6 +112,7 @@ class CaregiverViewSet(BaseViewset):
     action_serializers = {
         "default": CaregiverGetSerializer,
         "create": CaregiverCreateSerializer,
+        "retrieve": CaregiverDetailGetSerializer,
         "partial_update": CaregiverUpdateSerializer,
         "update_profile" : CaregiverUpdateSerializer,
     }
@@ -127,6 +131,19 @@ class CaregiverViewSet(BaseViewset):
     filter_backends = [SearchFilter]
     search_param = "search"
     search_fields = ["name"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.action == "retrieve":
+            return queryset.select_related("user__profile").prefetch_related(
+                "services__service_category",
+                "caregiver_certifications__certification",
+                "caregiver_conditions__condition",
+                "caregiver_equipments__equipment",
+            )
+
+        return queryset
 
     @action(detail=False, methods=["patch"], url_path="update-profile")
     def update_profile(self, request, *args, **kwargs):
